@@ -1,12 +1,19 @@
 run_analysis <- function(){
+        
         test_dir <- "~/Desktop/Coursera/Cleaning Data/wearable_tech/UCI HAR Dataset/test"
-        test_list <- list.files(path = test_dir, pattern = ".txt")
-        test_list <- lapply(paste(test_dir, test_list, sep = "/"), function(x)read.table(x))
-        test_list
-
-        # train_dir <- "~/Desktop/Coursera/Cleaning Data/wearable_tech/UCI HAR Dataset/train"
-        # train_list <- list.files(path = train_dir, pattern = ".txt")
-        # train_list <- lapply(paste(test_dir, train_list, sep = "/"), function(x)read.table(x))
-        # trian_list
+        train_dir <- "~/Desktop/Coursera/Cleaning Data/wearable_tech/UCI HAR Dataset/train"
+        labels_dir <- "~/Desktop/Coursera/Cleaning Data/wearable_tech/UCI HAR Dataset"
+        
+        test_set <- read.table(paste(test_dir, "X_test.txt", sep = "/"))
+        train_set <- read.table(paste(train_dir, "X_train.txt", sep = "/"))
+        
+        test_lab <- read.table(paste(test_dir, "y_test.txt", sep = "/"))
+        train_lab <- read.table(paste(train_dir, "y_train.txt", sep = "/"))
+        
+        features <- read.table(paste(labels_dir, "features.txt", sep = "/"))
+        activities <- read.table(paste(labels_dir, "activity_labels.txt", sep = "/"))
+        
+        colnames(test_set) <- features[,2]
+        colnames(train_set) <- features[,2]
         
 }
