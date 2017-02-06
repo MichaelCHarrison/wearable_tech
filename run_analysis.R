@@ -24,12 +24,11 @@ run_analysis <- function(){
 
         df_list <- c(rbind(test_subs, train_subs),
                      rbind(test_lab, train_lab),
-                     rbind(test_set, train_set)
-        )
+                     rbind(test_set, train_set))
 
-        combined_df <- do.call("cbind", df_list)
+        combined_df <- as.data.frame(do.call("cbind", df_list))
         
-        master_df <- master_df[,grepl("mean|std", colnames(combined_df))]
-                
+        master_df <- combined_df[,grepl("mean[()]*$|std[()]*$", colnames(combined_df))]
+        
 
 }
