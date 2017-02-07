@@ -21,14 +21,35 @@ run_analysis <- function(){
         colnames(train_lab) <- "activity"
         colnames(test_set) <- features[,2]
         colnames(train_set) <- features[,2]
-
+        
+        test_set <- test_set[,grepl("mean[()]*$|std[()]*$", colnames(test_set))]
+        train_set <- train_set[,grepl("mean[()]*$|std[()]*$", colnames(train_set))]        
+        
         df_list <- c(rbind(test_subs, train_subs),
                      rbind(test_lab, train_lab),
                      rbind(test_set, train_set))
 
-        combined_df <- as.data.frame(do.call("cbind", df_list))
+        library(dplyr)
+        combined_tbl <- tbl_df(do.call("cbind", df_list))
         
-        master_df <- combined_df[,grepl("mean[()]*$|std[()]*$", colnames(combined_df))]
+        variables <- names(combined_tbl)[1:12]
         
-
+        tidy_tbl <- combined_tbl %>%
+                select(subject,
+                       activity,
+                       "bodyacceleration-mean" = starts_with(variables[3]),
+                       "bodyacceleration-std" = starts_with(variables[4]),
+                       "gravityacceleration-mean" = starts_with(variables[5]),
+                       "gravityacceleration-std" = starts_with(variables[6]),
+                       "bodyjerkacceleration-mean" = starts_with(variables[7]),
+                       "bodyjerkacceleration-std" = starts_with(variables[8]),
+                       "bodygyroscope-mean" = starts_with(variables[9]),
+                       "bodygyroscope-std" = starts_with(variables[10]),
+                       "bodyjerkgyroscope-mean" = starts_with(variables[11]),
+                       "bodyjerkgyroscope-std" = starts_with(variables[12])) %>%
+                mutate(activity = plyr::mapvalues(activity,
+                                                  from = c(1:6), 
+                                                  to = as.character(activities[,2])),
+                       activity = tolower(gsub("_", "", activity))) %>%
+                arrange(subject, activity)
 }
