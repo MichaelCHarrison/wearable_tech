@@ -1,5 +1,4 @@
 run_analysis <- function(){
-        
         test_dir <- "~/Desktop/Coursera/Cleaning Data/wearable_tech/UCI HAR Dataset/test"
         train_dir <- "~/Desktop/Coursera/Cleaning Data/wearable_tech/UCI HAR Dataset/train"
         labels_dir <- "~/Desktop/Coursera/Cleaning Data/wearable_tech/UCI HAR Dataset"
@@ -35,8 +34,8 @@ run_analysis <- function(){
         variables <- names(combined_tbl)[1:12]
         
         tidy_tbl <- combined_tbl %>%
-                select(subject,
-                       activity,
+                select(activity,
+                       subject,
                        "bodyacceleration-mean" = starts_with(variables[3]),
                        "bodyacceleration-std" = starts_with(variables[4]),
                        "gravityacceleration-mean" = starts_with(variables[5]),
@@ -52,4 +51,12 @@ run_analysis <- function(){
                                                   to = as.character(activities[,2])),
                        activity = tolower(gsub("_", "", activity))) %>%
                 arrange(subject, activity)
+        
+        summary_tbl <- tidy_tbl %>%
+                group_by(activity, subject) %>%
+                summarize_each(funs(mean))
+        colnames(summary_tbl)[3:12] <- paste("average",colnames(summary_tbl[3:12]), sep = "-")
+        
+        tables <- list(tidy_tbl, summary_tbl)
+        tables
 }
